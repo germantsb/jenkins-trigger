@@ -14,16 +14,10 @@ const sleep = (seconds) => {
 
 async function requestJenkinsJob(jobName, params, headers) {
   const jenkinsEndpoint = core.getInput('url');
-
-  const jsonReq = {
-    method: 'GET',
-    url: `${jenkinsEndpoint}/job/${jobName}/api/json`,
-    headers: headers
-  };
   const req = {
     method: 'POST',
     url: `${jenkinsEndpoint}/job/${jobName}/buildWithParameters`,
-    form: params,
+    body: JSON.stringify(params),
     headers: headers
   };
   core.info(`>>> Request: ${JSON.stringify(req)}`);
@@ -94,6 +88,7 @@ async function main() {
     // create auth token for Jenkins API
     const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
     let headers = {
+      'content-type': 'application/json',
       'Authorization': `Basic ${API_TOKEN}`
     }
     if (core.getInput('headers')) {

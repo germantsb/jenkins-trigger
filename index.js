@@ -12,12 +12,19 @@ const sleep = (seconds) => {
   });
 };
 
+function buildUrlWithParams(baseUrl, params) {
+    let url = `${baseUrl}?`;
+    for (const [key, value] of Object.entries(params)) {
+      url += `${key}=${encodeURIComponent(value)}&`;
+    }
+    return url.slice(0, -1);
+  }
+
 async function requestJenkinsJob(jobName, params, headers) {
   const jenkinsEndpoint = core.getInput('url');
   const req = {
     method: 'POST',
-    url: `${jenkinsEndpoint}/job/${jobName}/buildWithParameters`,
-    body: params,
+    url: buildUrlWithParams(`${jenkinsEndpoint}/job/${jobName}/buildWithParameters`, params),
     headers: headers
   };
   core.info(`>>> Request: ${JSON.stringify(req)}`);
@@ -88,7 +95,6 @@ async function main() {
     // create auth token for Jenkins API
     const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
     let headers = {
-      'content-type': 'application/json',
       'Authorization': `Basic ${API_TOKEN}`
     }
     if (core.getInput('headers')) {

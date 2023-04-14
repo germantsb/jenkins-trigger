@@ -31,12 +31,14 @@ async function requestJenkinsJob(jobName, params, headers) {
       resolve(body.search("ParametersDefinitionProperty") >= 0);
     })
   );
+  core.info(`>>> Job is parameterized: ${isParameterized}`)
   const req = {
     method: 'POST',
     url: `${jenkinsEndpoint}/job/${jobName}${isParameterized ? '/buildWithParameters' : '/build'}`,
     form: isParameterized ? params : undefined,
     headers: headers
   };
+  core.info(`>>> Request: ${JSON.stringify(req)}`);
   await new Promise((resolve, reject) => request(req)
     .on('response', (res) => {
       core.info(`>>> Job is started!`);

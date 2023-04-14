@@ -17,7 +17,7 @@ async function requestJenkinsJob(jobName, params, headers) {
   const req = {
     method: 'POST',
     url: `${jenkinsEndpoint}/job/${jobName}/buildWithParameters`,
-    body: JSON.stringify(params),
+    body: params,
     headers: headers
   };
   core.info(`>>> Request: ${JSON.stringify(req)}`);

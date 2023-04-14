@@ -20,22 +20,10 @@ async function requestJenkinsJob(jobName, params, headers) {
     url: `${jenkinsEndpoint}/job/${jobName}/api/json`,
     headers: headers
   };
-  const isParameterized = await new Promise((resolve, reject) => 
-    request(jsonReq, (err, res, body) => {
-      if (err) {
-        core.setFailed(err);
-        core.error(JSON.stringify(err));
-        clearTimeout(timer);
-        reject();
-      }
-      resolve(body.search("ParametersDefinitionProperty") >= 0);
-    })
-  );
-  core.info(`>>> Job is parameterized: ${isParameterized}`)
   const req = {
     method: 'POST',
-    url: `${jenkinsEndpoint}/job/${jobName}${isParameterized ? '/buildWithParameters' : '/build'}`,
-    form: isParameterized ? params : undefined,
+    url: `${jenkinsEndpoint}/job/${jobName}/buildWithParameters`,
+    form: params,
     headers: headers
   };
   core.info(`>>> Request: ${JSON.stringify(req)}`);

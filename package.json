@@ -1,6 +1,6 @@
 {
   "name": "jenkins-trigger-action",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Trigger a Jenkins job",
   "main": "index.js",
   "scripts": {

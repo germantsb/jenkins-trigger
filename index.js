@@ -93,7 +93,8 @@ async function main() {
       core.info(`>>> Parameter ${params.toString()}`);
     }
     // create auth token for Jenkins API
-    const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
+    // const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
+    const API_TOKEN = `${core.getInput('user_name')}:${core.getInput('api_token')}`;
     let headers = {
       'Authorization': `Basic ${API_TOKEN}`
     }

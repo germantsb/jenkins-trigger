@@ -31,6 +31,10 @@ async function requestJenkinsJob(jobName, params, headers) {
   await new Promise((resolve, reject) => request(req)
     .on('response', (res) => {
       core.info(`>>> Response: ${JSON.stringify(res)}`);
+      if (res.statusCode != 201) {
+        core.setFailed("Build not created");
+        reject()
+      }
       resolve();
     })
     .on("error", (err) => {
@@ -56,8 +60,9 @@ async function getJobStatus(jobName, headers) {
           reject(err);
         }
         try {
-        resolve(JSON.parse(body));
-        } catch(err) {
+          resolve(JSON.parse(body));
+        } 
+        catch(err) {
           core.info(`Failed to parse body err: ${err}, body: ${body}`);
           resolve({timestamp: 0}); // try again
         }
@@ -93,8 +98,7 @@ async function main() {
       core.info(`>>> Parameter ${params.toString()}`);
     }
     // create auth token for Jenkins API
-    // const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
-    const API_TOKEN = `${core.getInput('user_name')}:${core.getInput('api_token')}`;
+    const API_TOKEN = Buffer.from(`${core.getInput('user_name')}:${core.getInput('api_token')}`).toString('base64');
     let headers = {
       'Authorization': `Basic ${API_TOKEN}`
     }
@@ -113,10 +117,12 @@ async function main() {
     if (core.getInput('wait') == 'true') {
       await waitJenkinsJob(jobName, startTs, headers);
     }
-  } catch (err) {
+  } 
+  catch (err) {
     core.setFailed(err.message);
     core.error(err.message);
-  } finally {
+  } 
+  finally {
     clearTimeout(timer);
   }
 }

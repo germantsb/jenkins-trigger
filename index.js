@@ -32,11 +32,10 @@ async function requestJenkinsJob(jobName, params, headers) {
     .on('response', (res) => {
       core.info(`>>> Response: ${JSON.stringify(res)}`);
       if (res.statusCode != 201) {
-        core.setFailed("Build not created");
-        core.error({message: "Build not created"});
-        reject({message: "Build not created"});
-      }
-      resolve();
+        reject({message: "Build not Created"});
+      } else {
+        resolve();
+      }      
     })
     .on("error", (err) => {
       core.setFailed(err);
